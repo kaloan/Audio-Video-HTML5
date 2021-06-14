@@ -1,0 +1,226 @@
+*::-webkit-scrollbar
+{
+  width: 15px;
+}
+
+*::-webkit-scrollbar-track
+{
+  background: #202020;
+}
+
+*::-webkit-scrollbar-thumb
+{
+  background-color: #a63737;
+}
+*
+{
+  scrollbar-color: #a63737 #202020;
+  scrollbar-width: thick;
+}
+
+body
+{
+  font-family: serif;
+  background-color: #202020;
+  font-size: 1.5em;
+  text-align: justify;
+  color: #bfcabf;
+}
+header
+{
+  color: crimson;
+}
+
+.navAside
+{
+  width: 200px;
+  float: left;
+  position: fixed;
+  z-index: 1;
+  top: 15%;
+}
+
+.mainArticle
+{
+  color: #bfcabf;
+  margin-left: 210px;
+  margin-right: 6%;
+  line-height: 130%;
+}
+.articleSection
+{
+  margin: 2.5em 0em;
+}
+
+.informationSendor
+{
+  vertical-align: super;
+  line-height: 0em;
+  position: relative;
+  font-size: 0.75em;
+  color: #c65757;
+}
+.informationActivator
+{
+  background-color: #a63737;
+  cursor: pointer;
+  text-transform: uppercase;
+  font-size: 1.6em;
+  font-family: sans-serif;
+  padding: 0.2em;
+  opacity: 0.55;
+  transition: 0.85s;
+  border-radius: 0.15em;
+  text-align: center;
+  box-shadow: 0 0 3px black;
+}
+.informationActivator:hover
+{
+  opacity:1;
+}
+
+ol
+{
+  list-style-type: none;
+}
+h1
+{
+  text-align: center;
+  font-size: 2em;
+  font-family: sans-serif;
+  color: #a63737;
+}
+
+button, .navAside a
+{
+  background-color: #a63737;
+  border: none;
+  border-radius: 10px;
+  color: mintcream;
+  padding: 12px 28px;
+  text-align: center;
+  font-size: 1.6em;
+  font-family: sans-serif;
+  margin: 5px 2px;
+  opacity: 0.55;
+  transition: 0.85s;
+  display: inline-block;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: 0 0 3px black;
+}
+.navAside a
+{
+  padding: 1px 1px;
+  font-size: 1.3em;
+  display: block;
+}
+@media screen and (max-width: 750px) {
+  .navAside
+  {
+    display: none;
+  }
+  .mainArticle
+  {
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+}
+
+button:hover, .navAside a:hover
+{
+  opacity: 1
+}
+.outLink, .inLink
+{
+  font-style: italic;
+  color: #c65757;
+}
+.outLink:visited, .inLink:visited
+{
+  font-style: italic;
+  color: #a63737;
+}
+
+figure
+{
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+figure img, figure video
+{
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 40%;
+}
+figcaption
+{
+  text-align: center;
+}
+textarea
+{
+  width:85%;
+  background-color: #c65757;
+  font-size: 18px;
+  margin-left: 10%;
+  margin-right: 15%;
+  border-radius: 0.5em;
+}
+
+#testAudioButton, #testVideoButton
+{
+  margin-left:35%;
+}
+.manyButtons
+{
+  display: flex;
+  justify-content:center;
+  flex-direction: row;
+}
+.manyButtons button
+{
+  display: inline-block;
+  margin: 0% 2%;
+  flex: none;
+}
+
+@media screen and (max-width: 1400px) {
+  .manyButtons
+  {
+    justify-content:center;
+    flex-direction: column;
+    width: 65%;
+    margin-left: 20%;
+  }
+  .manyButtons button
+  {
+    flex-grow: 1;
+    margin: 0.5em;
+  }
+}
+
+audio
+{
+  margin: 1em auto 1em 45%
+}
+video
+{
+  margin: 1em 25% 1em 25%;
+}
+
+footer
+{
+  color: #a63737;
+  border-top: 0.25em solid #a63737;
+}
+footer h3
+{
+  font-family: sans-serif;
+  text-align: center;
+  text-transform: uppercase;
+}
+footer p
+{
+  text-align: center;
+}

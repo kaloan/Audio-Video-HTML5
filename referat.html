@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="HTML5, JavaScript, Flash Player, Silverlight, WebRTC, WebVTT, capturing, embedding, sound, audio, video, media, multimedia, subtitles, captions, getUserMedia, getDisplayMedia, MediaRecorder, blob, прихващане, вграждане, звук, аудио, картина, видео, медия, мултимедия, субтитри">
+    <meta name="author" content="Калоян Стоилов">
+    <title>Прихващане на аудио и видео в HTML5</title>
+
+    <link rel="icon" href="img/HTML5_badge.png">
+
+    <link rel="stylesheet" type="text/css" href="css/myStyle.css">
+    <script src="javascript/myScript.js"></script>
+
+  </head>
+  <body onload="main()">
+
+    <aside class="navAside">
+      <nav>
+        <a href="#purpose">Причини</a>
+        <a href="#whyHTML">Защо HTML5</a>
+        <a href="#mediaHTML">Медия в HTML5</a>
+        <a href="#emdSnd">Вграждане аудио</a>
+        <a href="#emdVid">Вграждане видео</a>
+        <a href="#captSnd">Прихващане аудио</a>
+        <a href="#captVid">Прихващане видео</a>
+        <a href="#safety">Сигурност</a>
+        <a href="#webRTC">WebRTC</a>
+      </nav>
+    </aside>
+
+    <article class="mainArticle">
+      <h1>Прихващане на аудио и видео в HTML5</h1>
+
+      <section class="articleSection" id="purpose">
+        <h2>
+          Причини за прихващане на аудио и видео през интернет
+        </h2>
+        <p>
+          Може да се каже, че има две основни цели на действията ни с аудио и видео - архивна, която се състои в записването на медията, и комуникативна/социална, т.е. споделянето на информацията (било то заради образователна<a class="informationSendor" href="#info10">[10]</a>, развлекателна или друга присъща нейна стойност). Поради широкото разпространение точно на втората причина ще се разгледат и основите на вграждането на звук и видео. Използвайки HTML5 е възможно да направим интернет страница, в която лесно се имплементират както прихващане на аудио и картина, така и вграждане на вече записани такива. Получената информация може да се препрати към някой сървър с ресурси, многократно по-големи от машината на клиента. Така е възможно да се възползваме от обема памет на сървъра за запис на висококачествено видео, което обикновено в некомпресиран вид e от порядъка на хиляди MB/min<a class="informationSendor" href="#info11">[11]</a><a class="informationSendor" href="#info22">[22]</a> (съответно трябва да се достави достатъчно добра пропускателна способност) или пък от предоставянето на разнообразни сложни филтри (за звук или за образи) в реално време. За да не се хаби от честотната лента, обикновено живите предавания да се компресират, например в H.264 кодировка.<a class="informationSendor" href="#info20">[20]</a>  От друга страна е възможно сървърът да се използва от някоя онлайн платформа за аудио/видеосподеляне (като запис или чрез стрийм). Също може да го използваме за разговори/конференции.
+        </p>
+      </section>
+
+      <section class="articleSection" id="whyHTML">
+        <h2>
+          Защо точно с HTML?
+        </h2>
+        <p>
+          HTML5 предоставя множество приложно-програмни интерфейси(APIs), с което е сравнително лесно да се работи, като повечето съвременни браузъри го поддържат. Създадената страница лесно се достъпва. Другата възможност е да се създаде отделна програма със същата цел, но това би предположило използването на език с вградена/библиотечна възможност за обработка на аудио/видео поток, като в крайна сметка или ще се наложи да пишем много код, или ще имаме добре предоставени интерфейси, каквито има и при HTML. Също така  използващият ще трябва да пази някаква форма на изпълнимата програма. Всъщност е възможно прихващането в интернет страница да става и с плъгини към браузъра, както е било практика преди (поради невъзможност директно с HTML<a class="informationSendor" href="#info1">[1]</a>). Пример за такива приставки са Adobe Flash Player<a class="informationSendor" href="#info18">[18]</a> и Microsoft Silverlight<a class="informationSendor" href="#info23">[23]</a>. Те добавят допълнително изискване - да се инсталират, което е малка занимавка за потребителя, но при по-нови версии би трябвало наново да се свалят/обновяват. Съответно, ако поради някаква причина потребителят не е с версията, която се очаква, би могло да настъпи проблем. Стандартът HTML5 отстранява тази необходимост. Допълнително, тъй като Silverlight е от Microsoft, е направен да работи на OS Windows, а файловите типове относно записване и възпроизводство на звук и картина са все Windows-ски<a class="informationSendor" href="#info24">[24]</a>. Още повече, с пристигането на HTML5, чиито новости се разпростират и извън текущата тематика, се обезсмисля използването им. В днешни дни тези приставки са остарели и скоро ще спре поддръжката им (края на декември 2020г. за Flash Player, а края на октомври 2021г. - Silverlight). Ще споменем и че в HTML5 предоставените потоци чрез браузъра идват директно от компютърните драйвъри.
+        </p>
+      </section>
+
+      <section class="articleSection" id="mediaHTML">
+        <h2>
+          Медия в HTML5
+        </h2>
+        <p>
+          Читателят навярно ще се учуди защо ще се показва доста код на JavaScript. За да си обясним това трябва да разгледаме медийните(аудио и/или видео) елементи и потоци в HTML5. Всъщност HTML5 предоставя таговете <code>&lt;audio&gt;</code> и <code>&lt;video&gt;</code>, като съответните им елементи наследяват HTMLMediaElement и имат някои сходни функционалности (разбира се реализирани подобаващо от вида).<a class="informationSendor" href="#info8">[8]</a> Звуков елемент може и да се създаде в JS, използвайки конструктура <code>Audio()</code>. С тези тагове обикновено се "показват" зкук и видео, като може да имат и различни контроли и т.н. Въпреки това е възможно да пуснем звук и без някакво ясно означение в HTML. Това може да се наблюдае например при влизането в някой измамен сайт, според когото "компютърът ни има вирус" и други подобни. Това се случва, защото HTML5 е първата версия на HTML, в която звуковите и видео потоците (и тяхното управление) са добавени като вградена възможност. Главно с потоците се действа с JavaScript. Всъщност без него може да използваме само вече записана медия, когато работим с <code>&lt;audio&gt;</code> и <code>&lt;video&gt;</code>.
+        </p>
+
+        <p>
+          За работата с прихващане на звук се използва Browser Object Model(BOM) обектита <code>window</code> или по-точно подобектът му <code>navigator</code>, с помощта, на който може да работим с вградени API за медийните потоци. <code>window</code> пази информация за определен раздел в браузъра, а пък <code>navigator</code> е с атрибути и методи, свързани с приемане и обработка на данни. В началото на използване на HTML5 е имало доста проблеми с действията над медийни потоци, тъй като не са били стандартизирани. Всъщност и в момента не е част от базовия стандарт на HTML5, а се стандартизира допълнително, като повечето браузъри вече имат същите обекти и методи, като на някои места има малки различия, напр. базови стойности за параметри са различни. В момента за достъпване на потоци от входни медийни устройства се използва <code>navigator.getUserMedia()</code>, а има и API за по-лесен запис на медия - <code>MediaRecorder</code>.
+        </p>
+
+        <p>
+          При обработката на звук се използва Web Audio API. Чрез него се създава звуков граф (Audio graph), който има един или повече източници (source nodes) и сифон (destination node). Източниците са някакви потоци, с които започваме работа. Самата обработка се състои в попълване на графа с обработващи възли (processing nodes) и ребра между всичките типове възли, като началото на ребро препраща изхода си на края на реброто, който го приема като вход. Крайният резултат на обработката отива в сифона. Началните потоци може да са от прихванат звук, осцилатор, WebRTC връзка, или пък от <code>audio</code> елементи.
+        </p>
+        <figure id="fig1">
+          <img src="img/WebAudioBasics.png" alt="Звуков граф">
+          <figcaption>
+            Фигура 1. Примерен звуков граф<a class="informationSendor" href="#info3">[3]</a>
+          </figcaption>
+        </figure>
+
+        <p>
+          Няма лесни начини за обработка на картина по време на прихващането ѝ. Обаче е възможно да се обработи при представянето, като предадем видеото на <code>canvas</code> и се използват функции, написани за него.<a class="informationSendor" href="#info5">[5]</a> Възможно е и да се приложат CSS филтри на видео обекта, но те имат ограничени възможности.<a class="informationSendor" href="#info1">[1]</a>
+        </p>
+
+        <p>
+          При необходимост на предаване на звук и/или картина в реално време е възможно да се използват <code>Blob</code> обекти<a class="informationSendor" href="#info25">[25]</a>, с които се работи, подобно на файл. За целта се обозначава, че източникът е <code>blob:URL</code>, където URL е някакъв URL адрес, който се създава, когато правим обекта. YouTube и Twitch използват blob дори и при наличието на записано видео. Предполагаме, че това спестява нужда от писане на повече код, а и усложнява свалянето на самото видео. За да се свали видео от YouTube, обикновено трябва да се свали през други сайтове. За разлика от него, например в Internet Archive и BitChute директо се взима видеофайлът на сървъра и съответно много лесно може и да се свали.<br>
+          При предаване в реално време не е задължително да се работи с <code>Blob</code>. Big Blue Button и Google Meet не ги използват, поне не явно в автоматично генерирания HTML.<br>
+          Ако не е необходима обработка на сървър е възможно комуникацията между потребителите да става посредством WebRTC.
+        </p>
+      </section>
+
+      <section class="articleSection" id="emdSnd">
+      <h2>
+        Вграждане на звук
+      </h2>
+      <p>
+        Звук може да се вгради чрез тага <code>&lt;audio&gt;</code>. Връзката със звуковите файлове е добре да става чрез тага <code>&lt;source&gt;</code>, като са дадени няколко възможни кодировки.
+      </p>
+        <audio controls>
+          <source src="src/Nice.m4a">
+          <source src="src/Nice.mp3">
+          <p>Хюстън не чува.</p>
+        </audio>
+        <figure id="code1">
+          <textarea name="name" rows="6" cols="40" readonly>
+            <audio controls>
+              <source src="src/Nice.m4a">
+              <source src="src/Nice.mp3">
+              <p>Хюстън не чува.</p>
+            </audio>
+          </textarea>
+          <figcaption> Код 1. Примерен вграден звук</figcaption>
+        </figure>
+        <p>
+          Може да забележите наличиено на параграф, който се вижда само ако има проблем при пускането на звука. Главно това може да стане заради кодирането на файла. Всеки браузър поддържа определени аудио и видеоформати, не задължително всички възможни. Това може да доведе до невъзможност да се гледа видеото. Използвайки тага <code>&lt;source&gt;</code> е възможно да поставим различни кодировки на едно видео. Браузърът последователно проверява по списъка с източници, докато не намери някой, който може да изпълни, или до достигането на края на списъка. С оглед на това, ако знаем, че някои кодировки са "по-добри" от други, като тук имаме предвид качеството на картината и звука, е по-добре да поставим съответстващите им файлове по-нагоре в списъка. Относно кодеците ще кажем само, че най-разпространените за картина са H.264 и VP8, а за звук - AAC, MP3, FLAC. Читателят може да намери подробно информация за предимствата, недостатъците и използване на различни кодеци в MDN web docs<a class="informationSendor" href="#info21">[21]</a><a class="informationSendor" href="#info22">[22]</a>.
+          Някои от предпочитаните контейнери за аудио са MPEG и OGG,а за видео са MP4 и WEBM.<a class="informationSendor" href="#info2">[2]</a>. При стрийминг някои препоръчват да се използва OGG (той е формат позволяващ ни да използваме видео+аудио или само аудио).<a class="informationSendor" href="#info12">[12]</a>
+        </p>
+      </section>
+
+      <section class="articleSection"  id="emdVid">
+        <h2>
+          Вграждане на видео
+        </h2>
+        <p>
+          Видео може да се вгради чрез тага <code>&lt;video&gt;</code>, като допълнително може да се зададе дали да има управление на звука, дали автоматично да стартира, размера и т.н. Връзката към видеото и тук става чрез тага <code>&lt;source&gt;</code>.
+        </p>
+        <figure id="movie1">
+          <video controls width="50%" height="50%" preload="auto">
+            <source src="src/over9000.mp4" type="video/mp4">
+            <source src="src/over900.webm" type="video/webm">
+              <p>Браузърът ви не поддържа mp4 видеа!</p>
+          </video>
+          <figcaption>
+            Видео 1. Примерно вградено видео
+          </figcaption>
+        </figure>
+        <p>Вградено е чрез следния код:</p>
+          <figure id="code2">
+            <textarea rows="6" cols="120" readonly>
+              <video controls width="50%" height="50%" preload="auto">
+                <source src="src/over9000.mp4" type="video/mp4">
+                <source src="src/over900.webm" type="video/webm">
+                  <p>Браузърът Ви не поддържа mp4 видеа!</p>
+              </video>
+            </textarea>
+            <figcaption>
+              Код 2. Примерно вградено видео
+            </figcaption>
+          </figure>
+
+        <p>
+          Обликът на управлението на звук, пълен екран и т.н. по подразбиране зависи от браузъра. Те обаче могат да се "изключат" и да се направят такива по наше желание, като за различните бутони може да се използват например <code>&lt;div&gt;</code> с различни id-та, в които да се поместят изображения за отделните действия. След това трябва да се сложат слушатели за събития. Като се отчете например натискането на play, да се извика фунцкията play(), да се смени изображението на стандартното за pause и да се отчете че при следващо натискане ще искаме да се спре видеото (и съответно да се извика pause() на видео потока). По-подробно как може да си направите собствени контроли може да намерите в статия на Ayo<a class="informationSendor" href="#info13">[13]</a> (най-долу има и линк към github с пример), може да видите и пример от Ian Devlin<a class="informationSendor" href="#info14">[14]</a>. Всъщниост повечето (ако не даже всички) платформи за видео споделяне и социални мрежи си правят собствени контроли (напр. YouTube, Facebook, Twitch, Twitter, Vimeo, BitChute). Така контролите са еднакви за всички потребители и не са различни за потребителя, дори да смени браузъра.
+        </p>
+
+        <p>
+          Във видео елементите всъщност имаме 3 потока - поток за звук, поток за картина и поток за текст - субтитри от "затворен тип" (closed captions), което ще рече, че гледащият има възможността да ги включва/изключва по всяко време, а не са неизменна част от картината. Това което на български наричаме субтитри на английски може да се срещне като subtitles или captions, като някои предпочитат да правят следното разграничение: subtitles е просто превод/транскрипция на речта във видеото/филма, главно се използва от хора, които не разбират езика или/и се учат на него; captions, когато се взимат предвид проблемите на хора със слухови увреждания, като за целта се включват допълнително кой герой е казал някоя реплика, пише се за наличието други звуци, музика, както и някои техни характеристики.<a class="informationSendor" href="#info7">[7]</a> За поставянено на поток за текст се използва тагът <code>&lt;track&gt;</code>, като се поставя като дете във <code>&lt;video&gt;</code>. Субтитрите са във формат WebVTT (Web Video Text Tracks Format)<a class="informationSendor" href="#info6">[6]</a>, който е простоструктуриран - последователност от "двойки" означения за интервал кога да се показва текстът и самия него. Следващото видео е със субтитри, а отдолу е показано и съдържанието на WebVTT файла, който ги задава.
+        </p>
+        <figure id="movie2">
+          <video controls width="50%" height="50%" preload="auto">
+            <source src="src/over9000.mp4" type="video/mp4">
+            <source src="src/over900.webm" type="video/webm">
+            <track default kind="captions" src="src/SubsENG.vtt" srclang="en" label="English">
+            <track kind="captions" src="src/SubsBG.vtt" srclang="bg" label="Български">
+              <p>Браузърът ви не поддържа mp4 видеа!</p>
+          </video>
+          <figcaption>
+            Видео 2. Примерно видео със субтитри
+          </figcaption>
+        </figure>
+
+        <figure id="vttExample">
+          <textarea rows="17" cols="120" readonly>
+            WEBVTT
+
+            00:00.000 --> 00:04.500
+            [Burning sound]
+
+            00:05.000 --> 00:08.500
+            - Vegeta, what does the scouter say about his power level?
+
+            00:09.100 --> 00:11.400
+            - It's over <b>9000</b>!
+
+            00:12.000 --> 00:13.500
+            - What?! 9000?!
+
+            00:13.500 --> 00:17.000
+            - There's no way that could be right!
+          </textarea>
+          <figcaption>
+            Код 3. VTT файл със субтитри на английски
+          </figcaption>
+        </figure>
+
+        <p>
+          Последно ще отбележим, че при желание да се вгради видео направо от някоя платформа, се прави елемент от тип <code>iframe</code>, който служи за вграждане на напр. уебстраници, карти или в случая видео в страница. За пример YouTube и Vimeo имат възможност с кликане на бутон близо до контролите на видеото да покаже необходимия код, който директно да се копира в HTML-а на страницата. Така вградено видео има контролите на платформата, от която е.
+        </p>
+      </section>
+
+      <section class="articleSection" id="captSnd">
+        <h2>
+          Прихващане на аудио с HTML5
+        </h2>
+        <p>
+          За прихващането в HTML5 се използва <code>navigator.mediaDevices.getUserMedia()</code>. Като параметър се задава обект, който съдържа информация за това дали искаме да прихванем аудио и/или видео, както и други данни отдносно тях (например размер на картината в пиксели). Работата на браузъра е да предостави поток от входното устройство. Следният бутон и въобще кода би трябвало да работи на повечето съвременни браузъри. При натискането му се приема звук от микрофон и се изпраща на звуковото устройсто. За предпочитане е тестването със слушалки. При първото натискане трябва да се разреши достъпът до миркофона и започва приемането, следващите натискания са за съответно спиране/продължаване.
+        </p>
+        <button id="testAudioButton" type="button" name="testAudioButton" class="captBtn" onclick="exampleButton()">Прихвани микрофон</button>
+        <p>
+          Ето и фрагментът, с когото работи:
+        </p>
+        <figure id="code4">
+          <textarea rows="27" cols="100" readonly>
+            buttonPresses=0;
+            context = new AudioContext();
+            function exampleButton()
+            {
+              if(buttonPresses%2)
+              {
+                context.suspend();
+              }
+              else
+              {
+                if(buttonPresses==0)
+                {
+                window.AudioContext = window.AudioContext ||
+                                    window.webkitAudioContext;
+                navigator.mediaDevices.getUserMedia({audio: true}).
+                  then((stream) => {
+                    const microphone = context.createMediaStreamSource(stream);
+                    const filter = context.createBiquadFilter();
+                    microphone.connect(filter);
+                    filter.connect(context.destination);
+                });
+                }
+                else context.resume();
+              }
+              buttonPresses++;
+            }
+          </textarea>
+          <figcaption>Код 4. Примерен бутон за прихващане на аудио</figcaption>
+        </figure>
+        <p>
+          Тук първо създаваме <code>AudioContext</code> обект, който ще се грижи за предаването на звука, той представлява граф за звукова обработка. При първото натискане на бутона се връзва към микрофона, като му поставяме филтър. След което при следващи натискания или се спира(чрез фунцкията <code>suspend()</code>), или се пуска(чрез фунцкията <code>resume()</code>) потока. В <code>getUserMedia()</code>, обектът <code>{audio: true}</code> посочва, че ще се прихваща звук. <code>context.createMediaStreamSource(stream)</code> създава обект <code>MediaStreamSource</code>, който в този случай отговаря на микрофона. Следващите редове използват <code>connect()</code>, за да се върже изхода от потока от микрофона към филтъра, а той към крайната точка на графа, който по подразбиране е текущото изходно устройство за звук - колонки или слушалки. В крайна сметка сме създали конвейер. Друг вариант за звука е например да поставим възел от тип <code>GainNode</code> в конвейра и при нататъшни натискания да променяме неговия атрибут <code>gain</code>, който от своя страна е обект от тип <code>AudioParam</code>, притежаващ атрибут <code>value</code>, грижещ се в случая за силата на приемания звук, все едно го умножава по себе си. Така например с <code>myGainNode.gain.value=0</code> бихме занулили силата на прихванатия звук, а с <code>myGainNode.gain.value=1</code> отново бихме прихванали напълно.
+        </p>
+
+        <p>
+          Следващият пример прихваща звука с левия/горния бутон, натискайки го отново се спира прихващането. През това време се записва прихванатият звук. Средният пуска записа да се чуе, а десният/долният бутон позволява да свалите записа.
+        </p>
+        <div class="manyButtons">
+          <button id="captureAudioButton" type="button" class="captBtn" onclick="captureAudioRecording()">Започни записване</button>
+          <button id="playAudioButton" type="button" class="captBtn" onclick="playAudioRecording()">Пусни записа</button>
+          <button id="downloadAudioButton" type="button" class="dlBtn" onclick="downloadAudioRecording()">Свали запис</button>
+        </div>
+        <figure id="code4">
+          <textarea rows="42" cols="100" readonly>
+            capturing = false;
+            playingRecording=false;
+            soundRecorder = null;
+            blobChunks = [];
+            audioTest = null;
+            audioURL = null;
+            function captureAudioRecording()
+            {
+              if(!capturing)
+              {
+                if(playingRecording&&audioTest!=null)
+                 document.getElementById('playAudioButton').click();
+
+                navigator.mediaDevices.getUserMedia({audio: true}).
+                then((stream) => {
+                  soundRecorder = new MediaRecorder(stream);
+                  soundRecorder.start();
+
+                  soundRecorder.ondataavailable = function(soundStream) {
+                    blobChunks.push(soundStream.data);
+                  }
+
+                  soundRecorder.onstop = function(soundStream) {
+                    const blob = new Blob(blobChunks, { 'type' : 'audio/ogg; codecs=opus' });
+                    blobChunks = [];
+                    audioURL = window.URL.createObjectURL(blob);
+                    audioTest = new Audio(audioURL);
+                    audioTest.loop = true;
+                  }
+                });
+                capturing=true;
+                document.getElementById('captureAudioButton').innerHTML="Спри записване";
+              }
+              else
+              {
+                capturing=false;
+                document.getElementById('captureAudioButton').innerHTML="Започни записване";
+
+                soundRecorder.stop();
+              }
+            }
+          </textarea>
+          <figcaption>Код 5. Бутон за записване</figcaption>
+        </figure>
+        <p>
+          Кодът за запис използва доста модифицирана версия на кода на Chris Mills за Web Dictaphone<a class="informationSendor" href="#info4">[4]</a>. Първо си създаваме различни променливи. Ако не записваме в момента, то пускаме с <code>getUserMedia()</code> да приема звук, като този път входът отива в обект от тип <code>MediaRecorder</code> и веднага започваме записа с функцията <code>start()</code>. <code>MediaRecorder</code> обектите имат атрибути <code>ondataavailable</code> и <code>onstop</code>, съответно задаващи действията при четене на информация от звуковия поток и при приключване на записа. При следващо натискане на бутона се вика <code>stop()</code> и се спира записа. Тогава се създава <code>blob</code> псевдо-файл, който да пази информацията от масива <code>blobChunks</code> с кодировка opus, в контейнер OGG. След това на <code>audioTest</code> се задава скрит <code>HTMLAudioElement</code>, който има източник <code>blob</code>-a.
+        </p>
+
+        <figure id="code6">
+          <textarea rows="22" cols="100" readonly>
+            function playAudioRecording()
+            {
+              if(!capturing)
+              {
+                if(!playingRecording)
+                {
+                  playingRecording=true;
+                  document.getElementById('playAudioButton').innerHTML="Спри записа";
+
+                  audioTest.play();
+                }
+                else
+                {
+                  playingRecording=false;
+                  document.getElementById('playAudioButton').innerHTML="Пусни записа";
+
+                  audioTest.pause();
+                }
+              }
+              else document.getElementById('playAudioButton').click();
+            }
+          </textarea>
+          <figcaption>Код 6. Бутон за пускане/спиране на записа</figcaption>
+        </figure>
+        <p>
+          Тук първо се правят някои проверки, с цел избягване на проблеми при записването, тъй като ако <code>audioTest</code> все оше работи, когато се записва новият, продължава да работи и няма как да се спре. Стига всичко е наред, когато искаме да пуснем записа извикваме <code>play()</code> за продължаване на звуковия поток от където е спрял (а ако не е бил пуснат се пуска). Когато искаме да спрем записа извикваме <code>pause()</code>.
+        </p>
+
+        <figure id="code7">
+          <textarea rows="16" cols="100" readonly>
+            function downloadAudioRecording()
+            {
+              if(audioURL!=null)
+              {
+                var randNum = Math.floor(Math.random() * Math.floor(89999) + 10000);
+                var fileName = "Recording" + randNum + ".ogg";
+                var DLElement = document.createElement('a');
+                DLElement.setAttribute('href', audioURL);
+                DLElement.setAttribute('download', fileName);
+
+                document.body.appendChild(DLElement);
+                DLElement.click();
+                document.body.removeChild(DLElement);
+              }
+            }
+          </textarea>
+          <figcaption>Код 7. Бутон за сваляне на записа</figcaption>
+        </figure>
+        <p>
+          Тук за свалянето просто създаваме скрит <code>anchor</code>, като за връзка поставяме URL адреса на създадения при записа <code>blob</code>, а името на файла го правим на произволен принцип. Показваме, че връзката ще е за сваляне, след което пускаме свалянето.
+        </p>
+
+        <p>
+          Читателят може да се запознае по-подробно с някои демота.<a class="informationSendor" href="#info4">[4]</a><a class="informationSendor" href="#info32">[32]</a><a class="informationSendor" href="#info33">[33]</a>
+        </p>
+      </section>
+
+      <section class="articleSection" id="captVid">
+        <h2>
+          Прихващане на видео с HTML5
+        </h2>
+        <p>
+          За да прихванем видео отново използваме <code>navigator.mediaDevices.getUserMedia()</code>, но тук в обекта за ограничения ще поставим <code>{video: true}</code>.
+        </p>
+
+        <button id="testVideoButton" type="button" name="testVideoButton" class="captBtn" onclick="videoExample()">Прихвани камера</button>
+        <video id="testVideo"></video>
+        <figure id="code8">
+          <textarea rows="30" cols="100" readonly>
+            playing=false;
+            startedPlaying=false;
+            testVideo = null;
+            function videoExample()
+            {
+              if(!playing)
+              {
+                playing = true;
+                if(!startedPlaying)
+                {
+                  startedPlaying=true;
+                  testVideo = document.getElementById('testVideo');
+
+                  navigator.mediaDevices.getUserMedia({video: true}).
+                  then((stream) => {
+                    testVideo.srcObject = stream;
+                    testVideo.onloadedmetadata = function(metadata) {
+                        testVideo.play();
+                    };
+                  });
+                }
+                else testVideo.play();
+              }
+              else
+              {
+                playing = false;
+                testVideo.pause();
+              }
+            }
+          </textarea>
+          <figcaption>Код 8. Примерен бутон за прихващане на видео</figcaption>
+        </figure>
+        <p>
+          Кодът е подобен на този за прихващане на звук. След като хванем потока от камерата го задаваме на <code>srcObject</code> атрибута на видео елемента. След като стане ясно кой е потока пускаме видеото. При идни натискания съответно спираме или пускаме видото.
+        </p>
+
+        <p>
+          Следните няколко бутона работят доста подобно на бутоните за прихващане на звук от по-горе, но сега се записва видео със звук, вместо просто само звук.
+        </p>
+        <div class="manyButtons">
+          <button id="captureVideoButton" type="button" class="captBtn" onclick="captureVideoRecording()">Започни записване</button>
+          <button id="playVideoButton" type="button" class="captBtn" onclick="playVideoRecording()">Пусни записа</button>
+          <button id="downloadVideoButton" type="button" class="dlBtn" onclick="downloadVideoRecording()">Свали запис</button>
+        </div>
+        <video id="recordingVideo"></video>
+        <figure id="code9">
+          <textarea rows="10" cols="100" readonly>
+            videoRecorder.onstop = function(videoStream) {
+              const videoBlob = new Blob(videoBlobChunks, { 'type' : 'video/mp4; codecs=avc' });
+              videoBlobChunks = [];
+              videoURL = window.URL.createObjectURL(videoBlob);
+              recordingVideo=document.getElementById('recordingVideo');
+              recordingVideo.src=videoURL;
+              recordingVideo.loop=true;
+              recordingVideo.controls=true;
+            }
+          </textarea>
+          <figcaption>Код 9. Бутон за записване на видео</figcaption>
+        </figure>
+        <p>
+          Единственото по-различно е, че вместо да създаваме звуков елемент използваме видео елемент, който сме създали чрез <code>&lt;video&gt;</code> таг в HTML-а на страницата, а също и поставяме ограничение <code>getUserMedia({video: true, audio: true})</code>. Ще се въздържим от показване на останалата част на кода, за да не изписваме едно и също два пъти.
+        </p>
+
+        <p>
+          Възможно е с <code>navigator.mediaDevices.getDisplayMedia()</code> да прихванем поток от споделен екран. Полученият код е почти същия като създадения за прихващане на картина от камера. По долу има два бутона с цел представяне на фунцкионалността. Левият/горният води до избор на "повърхност" за споделяне, а десният/долният го пуска или спира. Може да променяте кой прозорец споделяте.
+        </p>
+
+        <div class="manyButtons">
+          <button id="screenCaptureButton" type="button" name="screenCaptureButton" class="dlBtn" onclick="screenCaptureChoice()">Избери екран</button>
+          <button id="screenShareButton" type="button" name="screenShareButton" class="captBtn" onclick="screenCaptureExample()">Сподели екран</button>
+        </div>
+        <video id="screenCaptureVideo"></video>
+        <figure id="code10">
+          <textarea rows="26" cols="100" readonly>
+            firstCapture = false;
+            screenCaptureVideo = null;
+            function screenCaptureChoice()
+            {
+              screenCaptureVideo = document.getElementById('screenCaptureVideo');
+
+              navigator.mediaDevices.getDisplayMedia({video: true}).
+              then((stream) => {
+                screenCaptureVideo.srcObject = stream;
+                screenCaptureVideo.width=Math.floor(0.5*window.innerWidth);
+                screenCaptureVideo.height=Math.floor(0.5*window.innerHeight);
+              });
+
+              if(!firstCapture)
+              {
+                window.addEventListener("resize", function(){
+                  screenCaptureVideo.width=Math.floor(0.5*window.innerWidth);
+                  screenCaptureVideo.height=Math.floor(0.5*window.innerHeight);
+                });
+              }
+
+              if(screenCapturing) document.getElementById('screenShareButton').click();
+
+              firstCapture = true;
+            }
+          </textarea>
+          <figcaption>Код 10. Бутон за прихващане на споделен прозорец</figcaption>
+        </figure>
+        <p>
+          Трябва да се внимава с размерите на картината. По начало се опитва да я постави с тези на прихванатата и съответно може да развали външния вид на сайта. Затова преоразмеряваме при промяна в размерите на браузърския прозорец. Възможно е и да се използва ограничение по размера на прихванатата картина, но това би било чисто статично.
+        </p>
+      </section>
+      <section class="articleSection" id="safety">
+        <h2>
+          Сигурност при прихващане на звук и картина
+        </h2>
+        <p>
+          От съображения за сигурност прихващането на данните от микрофона и/или камерата става само след разрешение. В противен случай би било лесно да се нарушава личното пространство и да се шпионира. Това е изискване на HTML5, т.е. чисто теоритично, ако се използваше някаква друга приставка към браузъра за прихващане, би могло да стане и без изричното разрешение. Обикновено разрешение за достъп до медийните входни устройства се изисква само веднъж на сайт. Лесно може след това да се спре разрешението. Примерни съобщения са показани по-долу. Също така прихващане може да стане само ако страницата е отворена като локален файл на машината, връзката е към localhost или връзката е през протокола HTTPS.<a class="informationSendor" href="#info1">[1]</a> Това увеличава сигурността, тъй като информацията между източника и получателя се предава в криптиран вид. В противен случай, изпращането на звук/картина чрез HTML5 би било по-податливо на атака от тип човек по средата (man-in-the-middle attack)<a class="informationSendor" href="#info15">[15]</a>, въпреки че такава атака може да стане и през HTTPS, като посредника се престори на удостоверяващ център (certificate authority).<a class="informationSendor" href="#info16">[16]</a><a class="informationSendor" href="#info17">[17]</a>
+        </p>
+      </section>
+
+      <section class="articleSection" id="webRTC">
+        <h2>
+          WebRTC и връзката му с HTML5
+        </h2>
+        <p>
+          WebRTC (съкратено от Web Real-Time Communication) е проект с отворен код, целящ общуването в реално време чрез звук и картина в браузърите да става без приставки. За целта се използват приложно-програмни интерфейси, които се обозначават с RTC в името. Идеята е връзката да става чрез UDP дейтаграми, като тя да е директно между клиентски браузъри, т.е. peer-to-peer. Тогава работата на сайта ни е да подготви връзката и да предаде информацията за нея на пиърите, напр. съответните NAT данни.<a class="informationSendor" href="#info26">[26]</a> Това обаче може да доведе до проблеми със сигурността - реалния IP адрес на пиър се използва, независимост дали се минава през Tor или пък VPN.<a class="informationSendor" href="#info28">[28]</a><a class="informationSendor" href="#info28">[29]</a> Повечето WebRTC API са свързани с цел създаване на канала и допълнителни данни, а за прихващане и предаване на информация се използват HTML5 медийни потоци и стандартните JS API за тях.<a class="informationSendor" href="#info27">[27]</a>. Потоците през WebRTC се криптират - медийните чрез SRTP (Secure Real-time Transport Protocol), а допълнителните данни чрез SCTP (Stream Control Transmission Protocol), като и двата работят върху DTLS (Datagram Transport Layer Security). Може да разгледате демо с обясения.<a class="informationSendor" href="#info30">[30]</a> WebRTC поддържат и собствени демота.<a class="informationSendor" href="#info31">[31]</a>
+        </p>
+      </section>
+
+      <section class="articleSection">
+        <p class="informationActivator">Цитирана литература и препратки
+          <ol class="informationBlock">
+            <li id="info1">
+              [1] Eric Bidelman, Sam Dutton,
+              <a class="outLink" href="https://www.html5rocks.com/en/tutorials/getusermedia/intro/">Capturing Audio & Video in HTML5</a>
+              , достъпено 05.12.2020г.
+            </li>
+            <li id="info2">
+              [2] MDN web docs,
+              <a class="outLink" href="https://developer.mozilla.org/en-US/docs/Learn/HTML/Multimedia_and_embedding/Video_and_audio_content/">Video and audio on the web</a>
+              , достъпено 10.11.2020г.
+            </li>
+            <li id="info3">
+              [3] MDN web docs,
+              <a class="outLink" href="https://developer.mozilla.org/en-US/docs/Web/API/AudioNode">AudioNode</a>
+              , достъпено 01.01.2021г.
+            </li>
+            <li id="info4">
+              [4] Chris Mills,
+              <a class="outLink" href="https://mdn.github.io/web-dictaphone/">Web Dictaphone</a>
+              , достъпено 01.01.2021г.
+            </li>
+            <li id="info5">
+              [5] MDN web docs,
+              <a class="outLink" href="https://developer.mozilla.org/en-US/docs/Web/Guide/Audio_and_video_manipulation">Audio and video manipulation</a>
+              , достъпено 02.01.2021г.
+            </li>
+            <li id="info6">
+              [6] MDN web docs,
+              <a class="outLink" href="https://developer.mozilla.org/en-US/docs/Web/API/WebVTT_API">Web Video Text Tracks Format (WebVTT)</a>
+              , достъпено 07.12.2020г.
+            </li>
+            <li id="info7">
+              [7] screenfont.ca,
+              <a class="outLink" href="http://screenfont.ca/learn/">
+                Understanding captions & subtitles</a>, дoстъпено 07.12.2020г.
+            </li>
+            <li id="info8">
+              [8] W3cub,
+              <a class="outLink" href="https://docs.w3cub.com/dom/htmlmediaelement">HTMLMediaElement</a>, дъстъпено 05.12.2020г.
+            </li>
+            <li id="info9">
+              [9] Stack Overflow question,
+              <a class="outLink" href="https://stackoverflow.com/questions/18509385/html-5-video-recording-and-storing-a-stream">HTML 5 video recording and storing a stream</a>, дъстъпено 10.11.2020г.
+            </li>
+            <li id="info10">
+              [10] David Wolpert,
+              <a class="outLink" href="https://www.schoology.com/blog/release-notes-html5-audiovideo-recorder-student-mastery-details-new-school-analytics-and-more">Schoology, Release Notes: HTML5 Audio/Video Recorder, Student Mastery Details, New School Analytics and More!</a>, дoстъпено 10.11.2020г.
+            </li>
+            <li id="info11">
+              [11] Linus Tech Tips Forums,
+              <a class="outLink" href="https://linustechtips.com/topic/75363-how-many-gbs-is-a-minute-of-1080p-video/">How many GB's is a minute of 1080p video?</a>, дoстъпено 10.11.2020г.
+            </li>
+            <li id="info12">
+              [12] Filestack,
+              <a class="outLink" href="https://blog.filestack.com/thoughts-and-knowledge/complete-list-audio-video-file-formats/">The Complete List of Video File Formats and Codecs for Developers</a>, дoстъпено 05.12.2020г.
+            </li>
+            <li id="info13">
+              [13] Ayo,
+              <a class="outLink" href="https://freshman.tech/custom-html5-video/">How to build a Custom HTML5 Video Player with JavaScript</a>, дoстъпено 05.12.2020г.
+            </li>
+            <li id="info14">
+              [14] Ian Devlin,
+              <a class="outLink" href="http://iandevlin.github.io/mdn/video-player-with-captions/">Sintel</a>, дoстъпено 05.12.2020г.
+            </li>
+            <li id="info15">
+              [15] Internet Society,
+              <a class="outLink" href="https://www.internetsociety.org/resources/doc/2020/fact-sheet-man-in-the-middle-attacks/">Fact Sheet: Man-in-the-Middle Attacks</a>, дoстъпено 05.12.2020г.
+            </li>
+            <li id="info16">
+              [16] OWASP,
+              <a class="outLink" href="https://owasp.org/www-community/attacks/Man-in-the-middle_attack">Man-in-the-middle attack</a>, дoстъпено 05.12.2020г.
+            </li>
+            <li id="info17">
+              [17] Eric Diehl,
+              <a class="outLink" href="https://eric-diehl.com/does-https-prevent-man-in-the-middle-attacks/">Does HTTPS prevent Man In The Middle attacks?</a>, дoстъпено 05.12.2020г.
+            </li>
+            <li id="info18">
+              [18] Adobe Flash Platform,
+              <a class="outLink" href="https://help.adobe.com/en_US/as3/dev/WS5b3ccc516d4fbf351e63e3d118a9b90204-7d1d.html">Capturing sound input</a>, дoстъпено 05.12.2020г.
+            </li>
+            <li id="info19">
+              [19] YouTube Engineering and Developers Blog,
+              <a class="outLink" href="https://youtube-eng.googleblog.com/2015/01/youtube-now-defaults-to-html5_27.html">
+                YouTube now defaults to HTML5 &lt;video&gt;</a>, дoстъпено 05.12.2020г.
+            </li>
+            <li id="info20">
+              [20] Twitch,
+              <a class="outLink" href="https://help.twitch.tv/s/article/broadcast-guidelines">
+                Broadcast Guidelines</a>, дoстъпено 05.12.2020г.
+            </li>
+            <li id="info21">
+              [21] MDN web docs,
+              <a class="outLink" href="https://developer.mozilla.org/en-US/docs/Web/Media/Formats/Audio_codecs">
+                Web audio codec guide</a>, дoстъпено 05.12.2020г.
+            </li>
+            <li id="info22">
+              [22] MDN web docs,
+              <a class="outLink" href="https://developer.mozilla.org/en-US/docs/Web/Media/Formats/Video_codecs">
+                Web video codec guide</a>, дoстъпено 05.12.2020г.
+            </li>
+            <li id="info23">
+              [23] Microsoft Docs,
+              <a class="outLink" href="https://docs.microsoft.com/en-us/previous-versions/windows/silverlight/dotnet-windows-silverlight/ff602282(v=vs.95)">
+                Webcam and Device Overview</a>, дoстъпено 07.12.2020г.
+            </li>
+            <li id="info24">
+              [24] Microsoft Docs,
+              <a class="outLink" href="https://docs.microsoft.com/en-us/previous-versions/bb412386(v=msdn.10)">
+                Supported Media Formats and Protocols in Silverlight</a>, дoстъпено 07.12.2020г.
+            </li>
+            <li id="info25">
+              [25] MDN web docs,
+              <a class="outLink" href="https://developer.mozilla.org/en-US/docs/Web/API/Blob">
+                Blob</a>, дoстъпено 30.12.2020г.
+            </li>
+            <li id="info26">
+              [26] WebRTC,
+              <a class="outLink" href="https://webrtc.org/getting-started/peer-connections">
+                Getting started with peer connections</a>, дoстъпено 31.12.2020г.
+            </li>
+            <li id="info27">
+              [27] MDN web docs,
+              <a class="outLink" href="https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API">
+                WebRTC API</a>, дoстъпено 31.12.2020г.
+            </li>
+            <li id="info28">
+              [28] Charles Whitmore,
+              <a class="outLink" href="https://nordvpn.com/blog/webrtc/">
+                How to disable WebRTC and prevent leaks</a>, дoстъпено 31.12.2020г.
+            </li>
+            <li id="info29">
+              [29] Martin Brinkmann,
+              <a class="outLink" href="https://www.ghacks.net/2018/03/29/how-to-check-if-sites-use-webrtc/">
+                How to check if sites use WebRTC</a>, дoстъпено 31.12.2020г.
+            </li>
+            <li id="info30">
+              [30] Coding With Chaim,
+              <a class="outLink" href="https://www.youtube.com/watch?v=JhyY8LdAQHU">
+                WebRTC Tutorial | Video Chat App Using Native WebRTC API From Scratch</a>, дoстъпено 31.12.2020г.
+            </li>
+            <li id="info31">
+              [31] WebRTC,
+              <a class="outLink" href="https://webrtc.github.io/samples/">
+                WebRTC samples</a>, дoстъпено 02.01.2020г.
+            </li>
+            <li id="info32">
+              [32] MDN web docs,
+              <a class="outLink" href="https://mdn.github.io/voice-change-o-matic/">
+                Voice-change-O-matic</a>, дoстъпено 02.01.2020г.
+            </li>
+            <li id="info33">
+              [33] Matt Diamond,
+              <a class="outLink" href="https://webaudiodemos.appspot.com/AudioRecorder/index.html">
+                Voice-change-O-matic</a>, дoстъпено 02.01.2020г.
+            </li>
+          </ol>
+        </p>
+
+        <p class="informationActivator">Списък с примерен програмен код
+          <ol class="informationBlock">
+            <li>
+              <a class="inLink" href="#code1">Код 1. Примерен вграден звук</a>
+            </li>
+            <li>
+              <a class="inLink" href="#code2">Код 2. Примерно вградено видео</a>
+            </li>
+            <li>
+              <a class="inLink" href="#vttExample">Код 3. VTT файл със субтитри на английски</a>
+            </li>
+            <li>
+              <a class="inLink" href="#code4">Код 4. Примерен бутон за прихващане на аудио</a>
+            </li>
+            <li>
+              <a class="inLink" href="#code5">Код 5. Бутон за записване</a>
+            </li>
+            <li>
+              <a class="inLink" href="#code6">Код 6. Бутон за пускане/спиране на записа</a>
+            </li>
+            <li>
+              <a class="inLink" href="#code7">Код 7. Бутон за сваляне на записа</a>
+            </li>
+            <li>
+              <a class="inLink" href="#code8">Код 8. Примерен бутон за прихващане на видео</a>
+            </li>
+            <li>
+              <a class="inLink" href="#code9">Код 9. Бутон за записване на видео</a>
+            </li>
+            <li>
+              <a class="inLink" href="#code10">Код 10. Бутон за прихващане на споделен прозорец</a>
+            </li>
+          </ol>
+        </p>
+
+        <p class="informationActivator">Списък с фигури
+          <ol class="informationBlock">
+            <li>
+              <a class="inLink" href="#fig1">Фигура 1. Примерен звуков граф</a>
+            </li>
+          </ol>
+        </p>
+      </section>
+    </article>
+  </body>
+</html>
